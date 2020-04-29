@@ -19,8 +19,10 @@ func gen_inside_obj():
 	var tmp=[]">>${script_path}
 tscn_list=$(find . -name "*.tscn")
 for tscn in ${tscn_list};do 
+# filter all template tscn
 new_name=$(echo ${tscn} | cut -c3-)
 tscn_path=${new_name%.tscn}
+# include tabs
 echo "	tmp.append([char_path+\"${tscn_path}\",hp])">>${script_path}
 done
 echo "	return tmp
