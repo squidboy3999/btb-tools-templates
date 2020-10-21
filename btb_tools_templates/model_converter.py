@@ -5,6 +5,7 @@ from typing import List
 from PIL import Image
 from pathlib import Path
 from normalmap_maker import NormalMapMaker
+from fbx_convert_to_obj import  Fbx2Obj
 
 #blender -b -P model_converter.py
 
@@ -47,14 +48,13 @@ class ModelConvertor:
         self.make_normal(self.img_to_png_ext(file_path))
         return file_path+'-IMG2PNG'
     
-    def fbx_to_obj_ext(self, fbx_path):
-        new_path=fbx_path.replace(".fbx",".obj")
-        return new_path.replace(".FBX",".obj")
+    # def fbx_to_obj_ext(self, fbx_path):
+    #     new_path=fbx_path.replace(".fbx",".obj")
+    #     return new_path.replace(".FBX",".obj")
 
     def fbx_to_obj(self,file_path):
-        pass
-        #bpy.ops.import_scene.fbx(filepath = file_path)
-        #bpy.ops.export_scene.obj(filepath = fbx_to_obj_ext(file_path))
+        f2o=Fbx2Obj()
+        f2o.obj_maker(file_path)
 
     def img_to_png_ext(self, img_path):
         new_path=img_path
