@@ -9,7 +9,9 @@ from normalmap_maker import NormalMapMaker
 #blender -b -P model_converter.py
 
 class ImageConvertor:
-    img_names=['.jpg','jpeg','.JPG','.JPEG','tga','dds']
+    img_names=['.jpg','jpeg','.JPG','.JPEG','.tga','.dds']
+    diffuse_names=['_d.png','_D.png','_diff.png','_DIFF.png','_DIFFUSE.png','_Diff.png']
+    normal_names=['_n.png','_N.png','_norm.png','_NORM.png','_NORMAL.png','_Norm.png']
 
     def __init__(self, file_dir):
         #dir = os.path.dirname(__file__)
@@ -59,6 +61,10 @@ class ImageConvertor:
         new_path=img_path
         for i_name in self.img_names:
             new_path=new_path.replace(i_name,".png")
+        for d_name in self.diffuse_names:
+            new_path=new_path.replace(d_name,"_Diffuse.png")
+        for n_name in self.normal_names:
+            new_path=new_path.replace(n_name,"_Normal.png")
         return new_path
 
     def img_to_png(self,file_path):
