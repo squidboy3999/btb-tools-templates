@@ -10,14 +10,16 @@ The purpose of this is to create a museum structure of various models for Godot.
 ## How to use
 - To create a new docker image- in project directory:
   docker build --tag img-to-png .
+  cd ..
 
 - Run the container (issues seem to exist with volume mounts in windows, so perform a copy instead) - in directory with img_files in it.
   docker run -d --name i2p img-to-png
   docker cp img_files i2p:/
-  docker exec -it i2p sh -c "python /usr/local/lib/python3.7/site-packages/btb_tools_templates/image_converter.py /img_files/"
+  docker exec -it i2p sh -c "python3 /usr/local/lib/python3.7/site-packages/btb_tools_templates/image_converter.py /img_files/"
 
 - copy out png texture and normal files
   docker cp i2p:/img_files img_files/done
+
 
 ## Future Work
 - Handle multimesh models and mulitple texture models - likely to be used for specific models or sets, possible specialized map solution.

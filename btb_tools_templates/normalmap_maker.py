@@ -63,15 +63,18 @@ class NormalMapMaker:
         return new_path
 
     def make_normal(self,diffuse_path):
-        img= plt.imread(diffuse_path)
-        if img.ndim == 3:
-            img_grey = numpy.zeros((img.shape[0],img.shape[1])).astype(float)
-            img_grey = (img[...,0] * 0.3 + img[...,1] * 0.6 + img[...,2] * 0.1)
-            img = img_grey
-        img_smooth = self.sgauss(img)
-        sblx, sbly = self.sbl(img_smooth)
-        normal_map = self.comp_nm(sblx, sbly)
-        imageio.imwrite(self.diffuse_to_normal(diffuse_path), normal_map)
+        try:
+            img= plt.imread(diffuse_path)
+            if img.ndim == 3:
+                img_grey = numpy.zeros((img.shape[0],img.shape[1])).astype(float)
+                img_grey = (img[...,0] * 0.3 + img[...,1] * 0.6 + img[...,2] * 0.1)
+                img = img_grey
+            img_smooth = self.sgauss(img)
+            sblx, sbly = self.sbl(img_smooth)
+            normal_map = self.comp_nm(sblx, sbly)
+            imageio.imwrite(self.diffuse_to_normal(diffuse_path), normal_map)
+        except:
+            print("FAILED TO MAKE NORMAL IMAGE")
 
 #if __name__ == "__main__":
 #    main()

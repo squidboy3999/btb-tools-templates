@@ -22,9 +22,12 @@ RUN pip install numpy
 RUN pip install matplotlib imageio 
 RUN apk add lapack openblas-dev lapack-dev 
 RUN pip install scipy==1.3.1
+RUN pip install Jinja2
 
 RUN mkdir /usr/local/lib/python3.7/site-packages/btb_tools_templates
+RUN mkdir /usr/local/templates
 
 COPY btb_tools_templates/* /usr/local/lib/python3.7/site-packages/btb_tools_templates/
+COPY templates/* /usr/local/templates/
 
 CMD tail -f /dev/null
