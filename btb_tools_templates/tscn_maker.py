@@ -22,7 +22,7 @@ class MakeTscn:
                                  diffuse_png=self.mv["diffuse_png"], 
                                  normal_png=self.mv["normal_png"])
         #write output to new_tres_fp
-        tres_path=self.parent_dir+"/"+self.mv["object_name"]+".tres"
+        tres_path=self.parent_dir+"/"+self.mv["object_file_name"].replace(".obj","")+".tres"
         self.logger.info("Tres file path: {}:".format(tres_path))
         self.logger.info("Jinja output: {}".format(jin_output))
         with open(tres_path,"w") as jin_f:
@@ -35,9 +35,10 @@ class MakeTscn:
         template=Template(tscn_string)
         jin_output = template.render(museum_name=self.mv["museum_name"],
                                  object_name=self.mv["object_name"],
+                                 tres_name=self.mv["object_file_name"].replace(".obj",""),
                                  object_file_name=self.mv["object_file_name"])
         #write output to new_tscn_fp
-        tscn_path=self.parent_dir+"/"+self.mv["object_name"]+".tscn"
+        tscn_path=self.parent_dir+"/"+self.mv["object_file_name"].replace(".obj","")+".tscn"
         self.logger.info("Tscn file path: {}:".format(tscn_path))
         self.logger.info("Jinja output: {}".format(jin_output))
         with open(tscn_path,"w") as jin_f:

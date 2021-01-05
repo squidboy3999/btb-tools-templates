@@ -9,7 +9,7 @@ from tscn_maker import MakeTscn
 import logging
 
 class ImageConverter:
-    img_names=['.jpg','jpeg','.JPG','.JPEG','.tga','.dds']
+    img_names=['.jpg','jpeg','.JPG','.JPEG','.tga','.dds','.png']
     diffuse_names=['_d.png','_D.png','_diff.png','_DIFF.png','_DIFFUSE.png','_Diff.png',"_Body.png","_0.png","_NormX.png","_glow.png","_CO.png"]
     normal_names=['_n.png','_N.png','_norm.png','_NORM.png','_NORMAL.png','_Norm.png',"_NO.png","_nrm.png"]
 
@@ -54,9 +54,9 @@ class ImageConverter:
             for subdir in subdirs:
                 full_path=os.path.join(root,subdir)
                 self.logger.info("Old path name {}".format(full_path))
-                new_full_path=self.use_rename_dict(full_path)
-                self.logger.info("New path name {}".format(new_full_path))
-                results=results+self.file_actions(new_full_path)
+                #new_full_path=self.use_rename_dict(full_path)
+                #self.logger.info("New path name {}".format(new_full_path))
+                results=results+self.file_actions(full_path)
         return results
 
     def file_actions(self,path):
@@ -65,7 +65,9 @@ class ImageConverter:
             obj_name=""
             normal_name=""
             diffuse_name=""
+            files_str=""
             for file in files:
+                files_str +=file+"\n"
                 file_path=os.path.join(root_sub,file)
                 self.logger.info("File for action to be take on {}".format(file_path))
                 new_path=self.action_selector(file_path)
@@ -76,12 +78,12 @@ class ImageConverter:
                     diffuse_name=new_path.split("/")[-1]
                     self.logger.info("Diffuse file located - {}".format(new_path))
                     self.logger.info("Diffuse name set to - {}".format(diffuse_name))
-                if "_Normal.png" in new_path:
-                    normal_name=new_path.split("/")[-1]
-                    self.logger.info("Normal file located - {}".format(new_path))
+                    normal_name=diffuse_name.replace("_Diffuse.png","_Normal.png")
+                    #self.logger.info("Normal file located - {}".format(new_path))
                     self.logger.info("Normal name set to - {}".format(normal_name))
             #  ****** DO TSCN STUFF HERE ???
-            if not obj_name =="":
+            #if not obj_name =="":
+            if obj_name:
                 folders=root_sub.split("/")
                 museum_values={"museum_name":folders[-2],
                                "object_name":folders[-1],
@@ -129,9 +131,10 @@ class ImageConverter:
         for n_name in self.normal_names:
             new_path=new_path.replace(n_name,"_Normal.png")
             self.logger.info("Old normal {0} and normal path {1}".format(img_path,new_path))
-        if (not "_Diffuse.png" in new_path) and (not "_Normal.png" in new_path):
+        if (not "_Normal.png" in new_path) and (not "_Diffuse.png" in new_path):
             new_path=new_path.replace(".png","_Diffuse.png")
             self.logger.info("Old file {0} and new diffuse path {1}".format(img_path,new_path))
+        self.logger.info("Old image path {0} and new path {1}".format(img_path,new_path))
         return new_path
 
     def img_to_png(self,file_path):
