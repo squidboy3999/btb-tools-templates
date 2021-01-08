@@ -153,8 +153,9 @@ class ImageConverter:
                 print('new_size is {0}'.format(new_size))
                 im1=im1.resize(new_size)
         im1.save(new_path,mode='r')
-        os.remove(file_path)
-        self.logger.info("{} - File {} removed".format(str(not os.path.isfile(file_path)),file_path))
+        if (not "_Normal.png" in file_path) and (not "_Diffuse.png" in file_path):
+            os.remove(file_path)
+            self.logger.info("{} - File {} removed".format(str(not os.path.isfile(file_path)),file_path))
         self.logger.info("{} - File {} created".format(str(os.path.isfile(new_path)),new_path))
         return new_path
 
