@@ -1,7 +1,7 @@
 import sys
 import os
 from typing import List
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from pathlib import Path
 from normalmap_maker import NormalMapMaker
 import json
@@ -138,26 +138,41 @@ class ImageConverter:
         return new_path
 
     def img_to_png(self,file_path):
-        im1 = Image.open(file_path,mode='r')
-        new_path=self.img_to_png_ext(file_path)
-        max_size=512
-        #im1=Image.open(file_path,mode='r')
-        width,height=im1.size
-        if width > max_size or height >max_size:
-            denom=int(height/max_size)
-            if width>height:
-                denom=int(width/max_size)
-            if denom>1:
-                print('{0} is the denom'.format(denom))
-                new_size=(int(width/denom),int(height/denom))
-                print('new_size is {0}'.format(new_size))
-                im1=im1.resize(new_size)
-        im1.save(new_path,mode='r')
-        if (not "_Normal.png" in file_path) and (not "_Diffuse.png" in file_path):
+        try:
+            im1 = Image.open(file_path,mode='r')
+            if im1.mode == 'CMYK':
+                im1 = im1.convert('RGB')
+            new_path=self.img_to_png_ext(file_path)
+            max_size=512
+            #im1=Image.open(file_path,mode='r')
+            width,height=im1.size
+            if width > max_size or height >max_size:
+                denom=int(height/max_size)
+                if width>height:
+                    denom=int(width/max_size)
+                if denom>1:
+                    print('{0} is the denom'.format(denom))
+                    new_size=(int(width/denom),int(height/denom))
+                    print('new_size is {0}'.format(new_size))
+                    im1=im1.resize(new_size)
+            im1.save(new_path,mode='r')
+            if (not "_Normal.png" in file_path) and (not "_Diffuse.png" in file_path):
+                os.remove(file_path)
+                self.logger.info("{} - File {} removed".format(str(not os.path.isfile(file_path)),file_path))
+            self.logger.info("{} - File {} created".format(str(os.path.isfile(new_path)),new_path))
+            return new_path
+        except UnidentifiedImageError:
+            self.logger.warning("File {} produced UnidentifiedImageError".format(file_path))
             os.remove(file_path)
-            self.logger.info("{} - File {} removed".format(str(not os.path.isfile(file_path)),file_path))
-        self.logger.info("{} - File {} created".format(str(os.path.isfile(new_path)),new_path))
-        return new_path
+            return ""
+        except ValueError:
+            self.logger.warning("File {} produced ValueError".format(file_path))
+            os.remove(file_path)
+            return ""
+        except NotImplementedError:
+            self.logger.warning("File {} produced NotImplementedError".format(file_path))
+            os.remove(file_path)
+            return ""
 
     def make_normal(self,file_path):
         #if normal file doesn't exist
